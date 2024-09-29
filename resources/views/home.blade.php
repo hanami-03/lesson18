@@ -32,7 +32,10 @@
                 <td>{{ $post->contents }}</td>
                 <td>{{ $post->created_at->format('Y-m-d H:i:s') }}</td>
                 <td>{{ $post->updated_at->format('Y-m-d H:i:s') }}</td>
-                <td><a href="{{ route('posts.edit', $post->id) }}" class="btn btn-primary">更新</a></td>
+                @if(auth()->check() && auth()->user()->name === $post->user_name)
+                <td>
+                    <a href="{{ route('posts.edit', $post->id) }}" class="btn btn-primary">更新</a>
+                </td>
                 <td>
                     <form method="POST" action="{{ route('posts.destroy', $post->id) }}" style="display: inline;" onsubmit="return confirm('本当に削除しますか？');">
                         @csrf
@@ -40,6 +43,7 @@
                         <button type="submit" class="btn btn-danger">削除</button>
                     </form>
                 </td>
+                @endif
             </tr>
             @endforeach
         </table>

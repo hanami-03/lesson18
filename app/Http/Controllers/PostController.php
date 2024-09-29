@@ -18,7 +18,7 @@ class PostController extends Controller
   {
 
     $request->validate([
-        'content' => 'required|string|max:100',
+        'content' => 'required|string|max:100|regex:/^[^\x{3000}]+$/u',
     ]);
 
 
@@ -40,7 +40,7 @@ class PostController extends Controller
   public function update(Request $request, Post $post)
   {
     $request->validate([
-        'content' => 'required|string|max:100',
+        'content' => 'required|string|max:100|regex:/^[^\x{3000}]+$/u',
     ]);
 
         $post->contents = $request->input('content');
@@ -59,11 +59,7 @@ class PostController extends Controller
   public function search(Request $request)
   {
     $query = $request->input('query');
-    $user = Auth::user();
-    $posts = Post::where('user_name', $user->name)
-        ->where('contents', 'LIKE', '%' . $query . '%')
-        ->get();
-
+    $posts = Post::where('contents', 'LIKE', '%' . $query . '%')->get();
     $resultsFound = $posts->isNotEmpty();
 
     return view('home', compact('posts', 'resultsFound'));
